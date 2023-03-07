@@ -1,26 +1,65 @@
 // Create an array of choices
 const choices = ["rock", "paper", "scissors"];
 
-// Get the user's choice
-let userChoice = prompt("Choose rock, paper, or scissors:");
+// Set initial scores
+let playerScore = 0;
+let computerScore = 0;
 
-// Make sure the user's choice is valid
-while (!choices.includes(userChoice)) {
-  userChoice = prompt("Invalid choice. Please choose rock, paper, or scissors:");
+// Get the buttons and result display div
+const buttons = document.querySelectorAll('button');
+const resultsDiv = document.querySelector('#results');
+
+// Add event listeners to the buttons
+buttons.forEach(button => {
+  button.addEventListener('click', () => {
+    playRound(button.id);
+  });
+});
+
+// Function to play a round
+function playRound(playerSelection) {
+  // Get a random choice for the computer
+  const computerSelection = choices[Math.floor(Math.random() * choices.length)];
+
+  // Determine the winner of the round
+  let roundResult;
+  if (playerSelection === computerSelection) {
+    roundResult = "It's a tie!";
+  } else if (
+    (playerSelection === "rock" && computerSelection === "scissors") ||
+    (playerSelection === "paper" && computerSelection === "rock") ||
+    (playerSelection === "scissors" && computerSelection === "paper")
+  ) {
+    roundResult = "You win!";
+    playerScore++;
+  } else {
+    roundResult = "Computer wins!";
+    computerScore++;
+  }
+
+  // Display the round result and current score
+  resultsDiv.innerHTML = `
+    <p>${roundResult}</p>
+    <p>Player: ${playerScore}</p>
+    <p>Computer: ${computerScore}</p>
+  `;
+
+  // Check if either player has reached 5 points and declare a winner
+  if (playerScore === 5) {
+    resultsDiv.innerHTML += "<p>You win the game!</p>";
+    resetGame();
+  } else if (computerScore === 5) {
+    resultsDiv.innerHTML += "<p>Computer wins the game!</p>";
+    resetGame();
+  }
 }
 
-// Get a random choice for the computer
-const computerChoice = choices[Math.floor(Math.random() * choices.length)];
+// Function to reset the game
+function resetGame() {
+  // Reset scores
+  playerScore = 0;
+  computerScore = 0;
 
-// Compare the choices and determine the winner
-if (userChoice === computerChoice) {
-  alert("It's a tie!");
-} else if (
-  (userChoice === "rock" && computerChoice === "scissors") ||
-  (userChoice === "paper" && computerChoice === "rock") ||
-  (userChoice === "scissors" && computerChoice === "paper")
-) {
-  alert("You win!");
-} else {
-  alert("Computer wins!");
+  // Clear result display
+  resultsDiv.innerHTML = "";
 }
